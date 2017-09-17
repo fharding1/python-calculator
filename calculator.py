@@ -2,8 +2,7 @@ from sys import stdin
 
 class Calculator:
     def __init__(self, operators):
-        for op, info in operators.iteritems():
-            self.operators[op] = info
+        self.operators = operators
 
     def calc(self, s):
         return self.__calcRPN(self.__infixToRPN(s.split(' ')))
