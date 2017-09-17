@@ -7,21 +7,12 @@ class Calculator:
     def calc(self, s):
         return self.__calcRPN(self.__infixToRPN(s.split(' ')))
 
-    def __isNumber(self, s):
-        try:
-            float(s)
-            return True
-        except ValueError:
-            return False
-
     def __infixToRPN(self, tokens):
         output = []
         opstack = []
 
         for tok in tokens:
-            if self.__isNumber(tok):
-                output.append(tok)
-            elif tok in self.operators:
+            if tok in self.operators:
                 while len(opstack) > 0 and self.operators[opstack[-1]]["prec"] >= self.operators[tok]["prec"] and self.operators[tok]["assoc"] == 'left':
                     output.append(opstack.pop())
                 opstack.append(tok)
@@ -32,8 +23,7 @@ class Calculator:
                     output.append(opstack.pop())
                 opstack.pop()
             else:
-                raise ValueError("invalid token: {0} is not a number or an operator or parenthesis".format(tok))
-
+                output.append(tok)
         while opstack:
             output.append(opstack.pop())
 
@@ -47,7 +37,7 @@ class Calculator:
             if tok in self.operators:
                 op2, op1 = stack.pop(), stack.pop()
                 stack.append(self.operators[tok]['lambda'](op1, op2))
-            elif self.__isNumber(tok):
+            else:
                 stack.append(float(tok))
         return stack.pop()
 
