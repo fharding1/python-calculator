@@ -15,16 +15,17 @@ class Calculator:
         opstack = []
 
         for tok in tokens:
-            if tok in self.operators:
-                while len(opstack) > 0 and self.operators[opstack[-1]]["prec"] >= self.operators[tok]["prec"] and self.operators[tok]["assoc"] == 'left':
-                    output.append(opstack.pop())
-                opstack.append(tok)
-            elif tok == '(':
+            print(tok)
+            if tok == '(':
                 opstack.append(tok)
             elif tok == ')':
                 while opstack[-1] != '(':
                     output.append(opstack.pop())
                 opstack.pop()
+            elif tok in self.operators:
+                while len(opstack) > 0 and opstack[-1] in self.operators and self.operators[opstack[-1]]["prec"] >= self.operators[tok]["prec"] and self.operators[tok]["assoc"] == 'left':
+                    output.append(opstack.pop())
+                opstack.append(tok)
             else:
                 output.append(tok)
         while opstack:
