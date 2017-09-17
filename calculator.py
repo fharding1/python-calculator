@@ -1,6 +1,8 @@
 from sys import stdin
 
 class Calculator:
+    """Calculator uses defined operators to evaluate infix mathematical expressions"""
+
     def __init__(self, operators):
         self.operators = operators
 
@@ -8,6 +10,7 @@ class Calculator:
         return self.__calcRPN(self.__infixToRPN(s.split(' ')))
 
     def __infixToRPN(self, tokens):
+        """Converts infix notation expressions into reverse polish (prefix) notation for easier calculation using the shunting yard algorithm"""
         output = []
         opstack = []
 
@@ -31,6 +34,7 @@ class Calculator:
         return output
 
     def __calcRPN(self, tokens):
+        """Evaluates reverse polish (prefix) notation"""
         stack = []
         for tok in tokens:
             print(stack, tok)
@@ -42,6 +46,7 @@ class Calculator:
         return stack.pop()
 
 class DefaultCalculator(Calculator):
+    """Derived class of Calculator with the default operators +, -, /, *, ^"""
     def __init__(self):
         self.operators = {
             '+': {'prec': 1, 'assoc': 'left', 'lambda': lambda a,b: a+b},
