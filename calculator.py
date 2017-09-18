@@ -16,7 +16,6 @@ class Calculator:
         opstack = []
 
         for tok in tokens:
-            print(tok)
             if tok == '(':
                 opstack.append(tok)
             elif tok == ')':
@@ -32,14 +31,12 @@ class Calculator:
         while opstack:
             output.append(opstack.pop())
 
-        print(output)
         return output
 
     def __calcRPN(self, tokens):
         """Evaluates reverse polish (postfix) notation"""
         stack = []
         for tok in tokens:
-            print(stack, tok)
             if tok in self.operators:
                 op2, op1 = stack.pop(), stack.pop()
                 stack.append(self.operators[tok]['lambda'](op1, op2))
@@ -65,5 +62,5 @@ class DefaultCalculator(Calculator):
             "e":  2.718281828459045235360287471352662497757247093699959574966
         }
 
-
-print(DefaultCalculator().calc(stdin.readline().strip('\n')))
+if __name__ == '__main':
+    print(DefaultCalculator().calc(stdin.readline().strip('\n')))
