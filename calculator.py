@@ -3,11 +3,12 @@ from sys import stdin
 class Calculator:
     """Calculator uses defined operators to evaluate infix mathematical expressions"""
 
-    def __init__(self, operators):
+    def __init__(self, operators, variables):
         self.operators = operators
+        self.variables = variables
 
-    def calc(self, s, vars):
-        return self.__calcRPN(self.__infixToRPN(s.split(' ')), vars)
+    def calc(self, s):
+        return self.__calcRPN(self.__infixToRPN(s.split(' ')))
 
     def __infixToRPN(self, tokens):
         """Converts infix notation expressions into reverse polish (prefix) notation for easier calculation using the shunting yard algorithm"""
@@ -34,7 +35,7 @@ class Calculator:
         print(output)
         return output
 
-    def __calcRPN(self, tokens, vars):
+    def __calcRPN(self, tokens):
         """Evaluates reverse polish (prefix) notation"""
         stack = []
         for tok in tokens:
@@ -42,8 +43,8 @@ class Calculator:
             if tok in self.operators:
                 op2, op1 = stack.pop(), stack.pop()
                 stack.append(self.operators[tok]['lambda'](op1, op2))
-            elif tok in vars:
-                stack.append(float(vars[tok]))
+            elif tok in self.variables:
+                stack.append(float(self.variables[tok]))
             else:
                 stack.append(float(tok))
         return stack.pop()
@@ -59,5 +60,10 @@ class DefaultCalculator(Calculator):
             '^': {'prec': 3, 'assoc': 'right', 'lambda': lambda a,b: a**b}
         }
 
+        self.variables = {
+            "pi": 3.141592653589793238462643383279502884197169399375105820974,
+            "e":  2.718281828459045235360287471352662497757247093699959574966
+        }
 
-print(DefaultCalculator().calc(stdin.readline().strip('\n'), {"pi": 3.14, "e": 2.72}))
+
+print(DefaultCalculator().calc(stdin.readline().strip('\n')))
