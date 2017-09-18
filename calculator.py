@@ -6,8 +6,8 @@ class Calculator:
     def __init__(self, operators):
         self.operators = operators
 
-    def calc(self, s):
-        return self.__calcRPN(self.__infixToRPN(s.split(' ')))
+    def calc(self, s, vars):
+        return self.__calcRPN(self.__infixToRPN(s.split(' ')), vars)
 
     def __infixToRPN(self, tokens):
         """Converts infix notation expressions into reverse polish (prefix) notation for easier calculation using the shunting yard algorithm"""
@@ -34,7 +34,7 @@ class Calculator:
         print(output)
         return output
 
-    def __calcRPN(self, tokens):
+    def __calcRPN(self, tokens, vars):
         """Evaluates reverse polish (prefix) notation"""
         stack = []
         for tok in tokens:
@@ -42,6 +42,8 @@ class Calculator:
             if tok in self.operators:
                 op2, op1 = stack.pop(), stack.pop()
                 stack.append(self.operators[tok]['lambda'](op1, op2))
+            elif tok in vars:
+                stack.append(float(vars[tok]))
             else:
                 stack.append(float(tok))
         return stack.pop()
@@ -58,4 +60,4 @@ class DefaultCalculator(Calculator):
         }
 
 
-print(DefaultCalculator().calc(stdin.readline().strip('\n')))
+print(DefaultCalculator().calc(stdin.readline().strip('\n'), {"pi": 3.14, "e": 2.72}))
