@@ -11,7 +11,7 @@ class Calculator:
         return self.__calcRPN(self.__infixToRPN(s.split(' ')))
 
     def __infixToRPN(self, tokens):
-        """Converts infix notation expressions into reverse polish (prefix) notation for easier calculation using the shunting yard algorithm"""
+        """Converts infix notation expressions into reverse polish (postfix) notation for easier calculation using the shunting yard algorithm"""
         output = []
         opstack = []
 
@@ -36,7 +36,7 @@ class Calculator:
         return output
 
     def __calcRPN(self, tokens):
-        """Evaluates reverse polish (prefix) notation"""
+        """Evaluates reverse polish (postfix) notation"""
         stack = []
         for tok in tokens:
             print(stack, tok)
