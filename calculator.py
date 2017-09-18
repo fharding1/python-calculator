@@ -7,8 +7,8 @@ class Calculator:
         self.operators = operators
         self.variables = variables
 
-    def calc(self, s):
-        return self.__calcRPN(self.__infixToRPN(s.split(' ')))
+    def calc(self, tokens):
+        return self.calcRPN(self.__infixToRPN(tokens))
 
     def __infixToRPN(self, tokens):
         """Converts infix notation expressions into reverse polish (postfix) notation for easier calculation using the shunting yard algorithm"""
@@ -33,7 +33,7 @@ class Calculator:
 
         return output
 
-    def __calcRPN(self, tokens):
+    def calcRPN(self, tokens):
         """Evaluates reverse polish (postfix) notation"""
         stack = []
         for tok in tokens:
@@ -62,5 +62,5 @@ class DefaultCalculator(Calculator):
             "e":  2.718281828459045235360287471352662497757247093699959574966
         }
 
-if __name__ == '__main':
-    print(DefaultCalculator().calc(stdin.readline().strip('\n')))
+if __name__ == '__main__':
+    print(DefaultCalculator().calc(stdin.readline().strip('\n').split(' ')))
