@@ -1,14 +1,25 @@
 from sys import stdin
 
+class Operator:
+    def __init__(self, precedence, associativity, lambdaeq):
+        self.precedence = precedence
+        self.associativity = associativity
+        self.lambdaeq = lambdaeq
+
 class Calculator:
     """Calculator uses defined operators to evaluate infix mathematical expressions"""
 
     def __init__(self, operators, variables):
         self.operators = operators
         self.variables = variables
-
-    def calc(self, tokens):
-        return self.calcRPN(self.__infixToRPN(tokens))
+    
+    def __precedenceAssociativeCheck(self, opstack, tok):
+        """Checks whether we need to pop from the operator stack into the output"""
+        if len(opstack) <= 0: return False
+        elif opstack[-1] not in self.operators: return False
+        elif self.operators[opstack[-1]].precedence < self.operators[tok].precedence: return False
+        elif self.operators[tok].associativity != 'left': return False
+        return True
 
     def __infixToRPN(self, tokens):
         """Converts infix notation expressions into reverse polish (postfix) notation for easier calculation using the shunting yard algorithm"""
@@ -23,7 +34,7 @@ class Calculator:
                     output.append(opstack.pop())
                 opstack.pop()
             elif tok in self.operators:
-                while len(opstack) > 0 and opstack[-1] in self.operators and self.operators[opstack[-1]]["prec"] >= self.operators[tok]["prec"] and self.operators[tok]["assoc"] == 'left':
+                while self.__precedenceAssociativeCheck(opstack, tok):
                     output.append(opstack.pop())
                 opstack.append(tok)
             else:
@@ -39,22 +50,27 @@ class Calculator:
         for tok in tokens:
             if tok in self.operators:
                 op2, op1 = stack.pop(), stack.pop()
-                stack.append(self.operators[tok]['lambda'](op1, op2))
+                stack.append(self.operators[tok].lambdaeq(op1, op2))
             elif tok in self.variables:
                 stack.append(float(self.variables[tok]))
             else:
                 stack.append(float(tok))
         return stack.pop()
+        
+    def calc(self, tokens):
+        return self.calcRPN(self.__infixToRPN(tokens))
 
+
+    
 class DefaultCalculator(Calculator):
     """Derived class of Calculator with the default operators +, -, /, *, ^"""
     def __init__(self):
         self.operators = {
-            '+': {'prec': 1, 'assoc': 'left', 'lambda': lambda a,b: a+b},
-            '-': {'prec': 1, 'assoc': 'left', 'lambda': lambda a,b: a-b},
-            '*': {'prec': 2, 'assoc': 'left', 'lambda': lambda a,b: a*b},
-            '/': {'prec': 2, 'assoc': 'left', 'lambda': lambda a,b: a/b},
-            '^': {'prec': 3, 'assoc': 'right', 'lambda': lambda a,b: a**b}
+            '+': Operator(1, 'left', lambda a,b: a+b),
+            '-': Operator(1, 'left', lambda a,b: a-b),
+            '*': Operator(2, 'left', lambda a,b: a*b),
+            '/': Operator(2, 'left', lambda a,b: a/b),
+            '^': Operator(3, 'right', lambda a,b: a**b),
         }
 
         self.variables = {
