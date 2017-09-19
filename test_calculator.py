@@ -9,7 +9,9 @@ class CalculatorTestCase(unittest.TestCase):
             {"infix": "18 - 6 * 2",                "res": 6},
             {"infix": "10 + 3 * ( 2 + 6 )",        "res": 34},
             {"infix": "50 - 10 * ( 4 - 2 ) + 6",   "res": 36},
-            {"infix": "2 * 9 - 3 * ( 6 - 1 ) + 1", "res": 4}
+            {"infix": "2 * 9 - 3 * ( 6 - 1 ) + 1", "res": 4},
+            {"infix": "x = 5 * 2 + 3",             "res": 0},
+            {"infix": "x * 2",                     "res": 26}
         ]
 
         calc = calculator.DefaultCalculator()
@@ -21,7 +23,9 @@ class CalculatorTestCase(unittest.TestCase):
             {"rpn": "18 6 2 * -",                "res": 6},
             {"rpn": "10 3 2 6 + * +",            "res": 34},
             {"rpn": "50 10 4 2 - * - 6 +",       "res": 36},
-            {"rpn": "2 9 * 3 6 1 - * - 1 +",     "res": 4}
+            {"rpn": "2 9 * 3 6 1 - * - 1 +",     "res": 4},
+            {"rpn": "x 5 2 * 3 + =",             "res": 0},
+            {"rpn": "x 2 *",                     "res": 26}
         ]
        
         calc = calculator.DefaultCalculator()

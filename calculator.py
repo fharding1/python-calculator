@@ -33,6 +33,8 @@ class Calculator:
                 while opstack[-1] != '(':
                     output.append(opstack.pop())
                 opstack.pop()
+            elif tok == '=':
+                opstack.append(tok)
             elif tok in self.operators:
                 while self.__precedenceAssociativeCheck(opstack, tok):
                     output.append(opstack.pop())
@@ -44,18 +46,39 @@ class Calculator:
 
         return output
 
+    def __isNumeric(self, s):
+        try:
+            float(s)
+            return True
+        except ValueError:
+            return False
+
     def calcRPN(self, tokens):
         """Evaluates reverse polish (postfix) notation"""
+
+        # note: redeclaring a variable is messed up. fix pls
+
         stack = []
         for tok in tokens:
-            if tok in self.operators:
+            if tok == '=':
                 op2, op1 = stack.pop(), stack.pop()
-                stack.append(self.operators[tok].lambdaeq(op1, op2))
-            elif tok in self.variables:
-                stack.append(float(self.variables[tok]))
+                if self.__isNumeric(op1):
+                    raise Exception('Numeric values are not allowed as variable names')
+                self.variables[op1] = float(op2)
+            elif tok in self.operators:
+                op2, op1 = stack.pop(), stack.pop()
+
+                if op1 in self.variables: op1 = self.variables[op1]
+                if op2 in self.variables: op2 = self.variables[op2]
+
+                stack.append(self.operators[tok].lambdaeq(float(op1), float(op2))) 
             else:
-                stack.append(float(tok))
-        return stack.pop()
+                stack.append(tok)
+
+        if len(stack) > 0 and stack[-1] in self.variables:
+            return self.variables[stack[-1]]
+        
+        return stack.pop() if len(stack) > 0 else 0
         
     def calc(self, tokens):
         return self.calcRPN(self.__infixToRPN(tokens))
@@ -70,7 +93,7 @@ class DefaultCalculator(Calculator):
             '-': Operator(1, 'left', lambda a,b: a-b),
             '*': Operator(2, 'left', lambda a,b: a*b),
             '/': Operator(2, 'left', lambda a,b: a/b),
-            '^': Operator(3, 'right', lambda a,b: a**b),
+            '^': Operator(3, 'right', lambda a,b: a**b)
         }
 
         self.variables = {
